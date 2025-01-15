@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -15,13 +18,56 @@
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  height: 100%;
+  padding: 0;
+  overflow-x: hidden;
+  @apply text-base;
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+#content {
+  /* height: calc(100vh - 104px);
+  @apply pb-8 */
+}
+
+.circle {
+  filter: blur(75px);
+}
+
+.sidebar {
+  background: rgba(255, 255, 255, 0.6);
+  @apply m-6 w-[276px] rounded-3xl p-6;
+}
+
+.blicicil-input-checkbox {
+  @apply h-6 w-5 rounded-sm text-b2b-primary;
+}
+
+button:disabled {
+  background-color: #cdcdcd;
+  color: #fff;
+  cursor: not-allowed;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+::placeholder {
+  @apply font-inter text-sm font-medium text-[#838484];
+}
+
+input[type='checkbox'] {
+  width: 24px; /*Desired width*/
+  height: 24px; /*Desired height*/
+}
+
+.bg-card-colorful {
+  background: linear-gradient(
+    280.79deg,
+    rgba(253, 95, 32, 0.7) 1.45%,
+    rgba(83, 17, 117, 0.7) 98.14%
+  );
 }
