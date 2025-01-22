@@ -38,8 +38,6 @@ function useFetchLabelItems() {
   });
 }
 
-// function usePostSaldo
-
 export {
   useFetchSaldo,
   useFetchLabelItems,
