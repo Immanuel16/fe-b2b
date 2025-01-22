@@ -28,27 +28,6 @@ const DashboardView = () => {
 
 const DashboardVerifyView = () => {
   const { data } = useFetchSaldo();
-  const { mutateAsync: logoutInternal } = useLogout();
-  const { mutateAsync: logoutExternal } = useLogoutExternal();
-
-  const onLogoutExternal = async () => {
-    const userId = await useUserId();
-    try {
-      await logoutExternal({ email: encrypt(userId) });
-      deleteCookie('token');
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  React.useEffect(() => {
-    // setCookie(
-    //   'token',
-    //   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MzcwODQ1MzMsImV4cCI6MTczNzA4ODEzMywidXNlcklkIjoiOWI4ZmE0YmQtNjU3YS00MGU4LTk5NWMtNDljYjM4MGZkNTc2In0.-9-7IwmZ8xGgJCVKezWhCU7ByySxR22c5yiilnnxj4I',
-    // );
-    // onLogoutExternal();
-    // deleteCookie('token');
-  }, []);
 
   if (data)
     return (
@@ -288,7 +267,7 @@ const ShippedItemList = () => {
 };
 
 const DashboardSkeleton = () => (
-  <div className="grid grid-cols-[40%_calc(20%-48px)_40%] gap-6">
+  <div className="grid gap-6">
     <Card isHomepage className="flex flex-col space-y-6 break-words text-base">
       <div className="flex flex-col space-y-2 text-white">
         <Skeleton className="h-3 w-1/3" />
