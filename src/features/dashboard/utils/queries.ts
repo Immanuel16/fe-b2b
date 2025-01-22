@@ -19,6 +19,30 @@ function useFetchSaldo() {
   });
 }
 
+type LabelItemsResponse = Array<{
+  id: number;
+  item_thumb_highres: string;
+  name: string;
+  item_type: string;
+  status: string;
+}>;
+
+function useFetchLabelItems() {
+  return useQuery({
+    enabled: true,
+    queryKey: ['label-items'],
+    queryFn: () =>
+      fetcher
+        .get<BaseResponse<LabelItemsResponse>>('api/reseller/orders')
+        .then((response) => response.data),
+  });
+}
+
 // function usePostSaldo
 
-export { useFetchSaldo, type SaldoPlafonResponse };
+export {
+  useFetchSaldo,
+  useFetchLabelItems,
+  type SaldoPlafonResponse,
+  type LabelItemsResponse,
+};
