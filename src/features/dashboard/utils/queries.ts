@@ -19,6 +19,17 @@ function useFetchSaldo() {
   });
 }
 
+function useFetchPlaceholder() {
+  return useQuery({
+    enabled: true,
+    queryKey: ['placeholder'],
+    queryFn: () =>
+      fetcher
+        .get<BaseResponse<SaldoPlafonResponse>>('/api-proxy/todos/1')
+        .then((response) => response.data),
+  });
+}
+
 type LabelItemsResponse = Array<{
   id: number;
   item_thumb_highres: string;
@@ -41,6 +52,7 @@ function useFetchLabelItems() {
 export {
   useFetchSaldo,
   useFetchLabelItems,
+  useFetchPlaceholder,
   type SaldoPlafonResponse,
   type LabelItemsResponse,
 };

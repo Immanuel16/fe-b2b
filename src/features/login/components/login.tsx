@@ -16,6 +16,7 @@ import * as Yup from 'yup';
 import { LoginRequest, useLogin, useLoginExternal } from '../utils/query';
 import { redirect, useRouter, usePathname } from 'next/navigation';
 import { setCookie, getCookie } from 'cookies-next';
+import { useFetchPlaceholder } from '@/features/dashboard/utils/queries';
 const LoginSchemas = Yup.object({
   user_id: Yup.string()
     .required('Email wajib diisi')
@@ -36,6 +37,7 @@ function Login() {
   const [type, setType] = React.useState<string>('password');
   const router = useRouter();
   const pathname = usePathname();
+  const { data } = useFetchPlaceholder();
 
   const formControl = useForm<LoginRequest>({
     resolver: yupResolver(LoginSchemas),
@@ -50,7 +52,7 @@ function Login() {
     if (getCookie('token')) {
       router.push('/');
     }
-  });
+  }, []);
 
   const { mutateAsync, isPending } = useLogin();
   const { mutateAsync: loginExternal, isPending: isPendingExternal } =
