@@ -27,7 +27,7 @@ function useLogin() {
   return useMutation({
     mutationFn: (payload: LoginRequest) => {
       return fetcher
-        .post<BaseResponse<LoginResponse>>('/api-proxy/login_internal', payload)
+        .post<BaseResponse<LoginResponse>>('/api/login_internal', payload)
         .then((response) => response.data.data);
     },
     onSuccess: () => {
@@ -42,9 +42,7 @@ function useLogout() {
   return useMutation({
     mutationFn: (payload: { user_id: string }) => {
       return fetcher
-        .post<
-          BaseResponse<LoginResponse>
-        >('/api-proxy/logout_internal', payload)
+        .post<BaseResponse<LoginResponse>>('/api/logout_internal', payload)
         .then((response) => response.data.data);
     },
     onSuccess: () => {
@@ -61,9 +59,7 @@ function useLoginExternal() {
   return useMutation({
     mutationFn: (payload: LoginExternalRequest) => {
       return fetcher
-        .post<
-          BaseResponse<LoginResponse>
-        >('/api-proxy/login_eksternal', payload)
+        .post<BaseResponse<LoginResponse>>('/api/login_eksternal', payload)
         .then((response) => response.data.data);
     },
     onSuccess: () => {
@@ -78,9 +74,7 @@ function useLogoutExternal() {
   return useMutation({
     mutationFn: (payload: { email: string }) => {
       return fetcher
-        .post<
-          BaseResponse<LoginResponse>
-        >('/api-proxy/logout_eksternal', payload)
+        .post<BaseResponse<LoginResponse>>('/api/logout_eksternal', payload)
         .then((response) => response.data.data);
     },
     onSuccess: () => {
