@@ -46,7 +46,7 @@ const queryClient = new QueryClient({
 });
 
 const fetcher = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_BASE_API,
+  baseURL: process.env.NEXT_PUBLIC_BASE_URL,
   auth: {
     username: process.env.NEXT_PUBLIC_BASIC_AUTH_USERNAME ?? 'blicicil',
     password: process.env.NEXT_PUBLIC_BASIC_AUTH_PASSWORD ?? 'blic1c!l',
