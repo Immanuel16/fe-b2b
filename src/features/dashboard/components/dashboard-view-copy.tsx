@@ -34,7 +34,7 @@ const DashboardVerifyView = () => {
   const logout = async () => {
     const userId = await useUserId();
     try {
-      await mutateAsync({ user_id: encrypt(userId) });
+      await mutateAsync({ email: encrypt(userId) });
       deleteCookie('token');
     } catch (error) {
       console.error(error);
