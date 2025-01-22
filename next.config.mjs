@@ -1,14 +1,14 @@
 /** @type {import('next').NextConfig} */
-import dotenv from 'dotenv';
+// import dotenv from 'dotenv';
 
-dotenv.config({path: `./.env.${process.env.ENVIRONMENT || 'prod'}`});
-const env = {}
+// dotenv.config({path: `./.env.${process.env.ENVIRONMENT || 'prod'}`});
+// const env = {}
 
-Object.keys(process.env).forEach((key) => {
-  if(key.startsWith('NEXT_PUBLIC_')) {
-    env[key] = process.env[key];
-  }
-})
+// Object.keys(process.env).forEach((key) => {
+//   if(key.startsWith('NEXT_PUBLIC_')) {
+//     env[key] = process.env[key];
+//   }
+// })
 
 const nextConfig = {
   eslint:{
