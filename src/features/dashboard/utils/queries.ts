@@ -14,7 +14,7 @@ function useFetchSaldo() {
     queryKey: ['saldo_plafon'],
     queryFn: () =>
       fetcher
-        .get<BaseResponse<SaldoPlafonResponse>>('api/saldo_plafon')
+        .get<BaseResponse<SaldoPlafonResponse>>('api-proxy/saldo_plafon')
         .then((response) => response.data),
   });
 }

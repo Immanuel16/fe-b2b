@@ -30,7 +30,11 @@ const nextConfig = {
   rewrites: () => [
     {
       source: '/api/:path*',
-      destination: `${process.env.NEXT_PUBLIC_BASE_API}/:path*`,
+      destination: `${process.env.NEXT_PUBLIC_BASE_API || 'http://192.168.20.187:8000/api-internal/blicicil_business'}/:path*`,
+    },
+    {
+      source: '/api-proxy/:path*',
+      destination: `${process.env.NEXT_PUBLIC_BASE_API || 'http://192.168.20.187:8000/api-internal/blicicil_business'}/:path*`,
     }
   ]
 };
