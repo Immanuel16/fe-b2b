@@ -1,23 +1,24 @@
 import { BaseResponse, fetcher } from '@/features/@shared/utils/query-helper';
 import { useQuery } from '@tanstack/react-query';
 
-type LabelItemsResponse = Array<{
-  id: number;
-  item_thumb_highres: string;
-  name: string;
-  item_type: string;
-  status: string;
-}>;
+type SaldoPlafonResponse = {
+  user_id: string;
+  limit_plafon: string;
+  used_plafon: string;
+  remaining_plafon: string;
+};
 
-function useFetchLabelItems() {
+function useFetchSaldo() {
   return useQuery({
     enabled: true,
-    queryKey: ['label-items'],
+    queryKey: ['saldo_plafon'],
     queryFn: () =>
       fetcher
-        .get<BaseResponse<LabelItemsResponse>>('api/reseller/orders')
+        .get<BaseResponse<SaldoPlafonResponse>>('api/saldo_plafon')
         .then((response) => response.data),
   });
 }
 
-export { useFetchLabelItems, type LabelItemsResponse };
+// function usePostSaldo
+
+export { useFetchSaldo, type SaldoPlafonResponse };

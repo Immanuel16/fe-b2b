@@ -1,5 +1,8 @@
 import { QueryClient } from '@tanstack/react-query';
 import axios from 'axios';
+import { getCookie } from 'cookies-next';
+import { useUserId } from './use-userid';
+import { encrypt } from './formatter';
 
 type ErrorResponse = {
   message: string;
@@ -52,6 +55,22 @@ const fetcher = axios.create({
     apikey: process.env.NEXT_PUBLIC_API_KEY,
   },
 });
+fetcher.interceptors.request.use((config) => {
+  const token = getCookie('token');
+  const urlNoAuthorization = ['register', 'login'];
+  const isExistNoAuth = !!urlNoAuthorization.find((url) =>
+    config.url?.includes(url),
+  );
+  if (!isExistNoAuth) {
+    config.headers['token'] = token;
+    // if (token) {
+    //   config.headers['x-userid'] = encrypt(
+    //     JSON.parse(atob(token.toString().split('.')[1]))['userId'],
+    //   );
+    // }
+  }
+  return config;
+});
 fetcher.interceptors.response.use(undefined, async (error) => {
   const isAuth = ['/api/login', '/api/logout', '/api/auth/'].some((item) =>
     error.config.url.startsWith(item),
@@ -60,7 +79,7 @@ fetcher.interceptors.response.use(undefined, async (error) => {
 
   if (isIntercepted && typeof window !== 'undefined') {
     await fetcher.post('/api/logout', { force: true });
-    window.location.href = '/login?error=expired';
+    window.location.href = '/login';
   } else if (isIntercepted) {
     // TODO: make proper logout interceptor for serverside api calls
   }

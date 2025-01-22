@@ -4,17 +4,22 @@ import { Button } from '@/features/@shared/components/button';
 import { EyeIcon } from '@/features/@shared/components/icon';
 import { InputGroup } from '@/features/@shared/components/input-group';
 import { TextInput } from '@/features/@shared/components/text-input';
-import { passwordRegex } from '@/features/@shared/constants/regex';
+import {
+  passwordRegex,
+  usernameRegex,
+} from '@/features/@shared/constants/regex';
 import { encrypt } from '@/features/@shared/utils/formatter';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as React from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import * as Yup from 'yup';
-import { LoginRequest, useLogin } from '../utils/query';
-import { redirect, useRouter } from 'next/navigation';
+import { LoginRequest, useLogin, useLoginExternal } from '../utils/query';
+import { redirect, useRouter, usePathname } from 'next/navigation';
 import { setCookie, getCookie } from 'cookies-next';
 const LoginSchemas = Yup.object({
-  user_id: Yup.string().required('Email wajib diisi'),
+  user_id: Yup.string()
+    .required('Email wajib diisi')
+    .matches(usernameRegex, 'Format tidak valid'),
   password: Yup.string()
     .required('Password wajib diisi')
     .required('Password wajib diisi')
@@ -30,6 +35,7 @@ type LoginForm = {
 function Login() {
   const [type, setType] = React.useState<string>('password');
   const router = useRouter();
+  const pathname = usePathname();
 
   const formControl = useForm<LoginRequest>({
     resolver: yupResolver(LoginSchemas),
@@ -47,14 +53,22 @@ function Login() {
   });
 
   const { mutateAsync, isPending } = useLogin();
+  const { mutateAsync: loginExternal, isPending: isPendingExternal } =
+    useLoginExternal();
 
   const login = async (values: LoginRequest) => {
     const body = {
       user_id: encrypt(values.user_id),
       password: encrypt(values.password),
     };
+    const bodyExternal = {
+      email: encrypt(values.user_id),
+      password: encrypt(values.password),
+    };
     try {
-      const response = await mutateAsync(body);
+      const response = pathname.includes('login-internal')
+        ? await mutateAsync(body)
+        : await loginExternal(bodyExternal);
       if (response.token) {
         setCookie('token', response.token);
       }
@@ -75,7 +89,10 @@ function Login() {
       <div className="flex flex-col space-y-3 text-sm">
         {/* input user_id */}
         <div className="flex flex-col space-y-0.5">
-          <InputGroup id="user_id" label="NIK">
+          <InputGroup
+            id="user_id"
+            label={pathname.includes('login-internal') ? 'NIK' : 'Email'}
+          >
             <Controller
               control={formControl.control}
               name="user_id"
@@ -84,7 +101,7 @@ function Login() {
                 fieldState: { error },
               }) => (
                 <TextInput
-                  placeholder="Masukkan nik"
+                  placeholder={`Masukkan ${pathname.includes('login-internal') ? 'nik' : 'email'}`}
                   color={error ? 'failure' : 'gray'}
                   helperText={error?.message}
                   {...field}
@@ -131,10 +148,10 @@ function Login() {
 
       <Button
         type="submit"
-        // disabled={
-        //   !(formControl.formState.isValid && formControl.formState.isDirty) ||
-        //   isPending
-        // }
+        disabled={
+          !(formControl.formState.isValid && formControl.formState.isDirty) ||
+          isPending
+        }
         color="primary-orange"
         isProcessing={isPending}
       >

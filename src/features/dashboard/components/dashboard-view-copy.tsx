@@ -28,13 +28,13 @@ const DashboardView = () => {
 
 const DashboardVerifyView = () => {
   const { data } = useFetchSaldo();
-  const { mutateAsync: logoutInternal } = useLogout();
-  const { mutateAsync: logoutExternal } = useLogoutExternal();
+  // const { mutateAsync } = useLogout();
+  const { mutateAsync } = useLogoutExternal();
 
-  const onLogoutExternal = async () => {
+  const logout = async () => {
     const userId = await useUserId();
     try {
-      await logoutExternal({ email: encrypt(userId) });
+      await mutateAsync({ user_id: encrypt(userId) });
       deleteCookie('token');
     } catch (error) {
       console.error(error);
@@ -46,7 +46,7 @@ const DashboardVerifyView = () => {
     //   'token',
     //   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MzcwODQ1MzMsImV4cCI6MTczNzA4ODEzMywidXNlcklkIjoiOWI4ZmE0YmQtNjU3YS00MGU4LTk5NWMtNDljYjM4MGZkNTc2In0.-9-7IwmZ8xGgJCVKezWhCU7ByySxR22c5yiilnnxj4I',
     // );
-    // onLogoutExternal();
+    logout();
     // deleteCookie('token');
   }, []);
 
@@ -54,32 +54,80 @@ const DashboardVerifyView = () => {
     return (
       <>
         <Header />
-        <Card
-          isHomepage
-          className="flex flex-col space-y-6 break-words text-base"
+        <div
+          className="rounded- grid grid-cols-[40%_40%_calc(20%-48px)] gap-6"
+          // style={{ overflowY: "scroll" }}
         >
-          <div className="flex flex-col space-y-2 text-white">
-            <p>Limit sisa</p>
-            <p className="text-2xl font-bold">
-              {toRupiah(+data?.data.remaining_plafon)}
+          <Card
+            isHomepage
+            className="flex flex-col space-y-6 break-words text-base"
+          >
+            <div className="flex flex-col space-y-2 text-white">
+              <p>Limit sisa</p>
+              <p className="text-2xl font-bold">
+                {toRupiah(+data?.data.remaining_plafon)}
+              </p>
+            </div>
+            <div className="grid grid-cols-2 gap-6">
+              <div className="flex flex-col space-y-2 text-white">
+                <p>Limit Terpakai</p>
+                <p className="text-xl font-bold">
+                  {' '}
+                  {toRupiah(+data?.data.used_plafon)}
+                </p>
+              </div>
+              <div className="flex flex-col space-y-2 text-white">
+                <p>Limit Awal</p>
+                <p className="text-xl font-bold">
+                  {toRupiah(+data?.data.limit_plafon)}
+                </p>
+              </div>
+            </div>
+          </Card>
+          <Card className="flex flex-col space-y-8 break-words text-base">
+            <div className="grid grid-cols-2 items-center gap-8">
+              <div className="flex flex-col space-y-2">
+                <p className="text-[#636466]">Cicilan per bulan</p>
+                <p className="text-2xl font-bold">Rp10,000,000</p>
+              </div>
+              <Button color="primary-orange">Bayar Tagihan</Button>
+            </div>
+            <div className="grid grid-cols-2 items-center gap-8">
+              <div className="flex flex-col space-y-2">
+                <p className="text-[#636466]">Bayar sebelum</p>
+                <p className="text-2xl font-bold">26 Nov 2022</p>
+              </div>
+              <div className="flex flex-col space-y-2">
+                <p className="text-2xl font-bold">4/12</p>
+                <p className="text-[#636466]">Cicilan sudah terbayar</p>
+              </div>
+            </div>
+          </Card>
+          <Card className="space-y-8 break-words p-8">
+            <p className="text-xl font-semibold text-[#636466]">
+              Cek Order Baru
             </p>
+            <button
+              type="button"
+              className="flex h-12 w-12 items-center justify-center rounded-full bg-[#f7b392]/25"
+            >
+              <i className="-rotate-90">
+                <ChevronDownIcon color="#f06726" fontSize={24} />
+              </i>
+            </button>
+          </Card>
+        </div>
+
+        {/* ----- LAST TRANSACTION ----- */}
+        <div className="mt-8 flex flex-col space-y-ml">
+          <h2 className="text-2xl font-semibold text-[#333]">
+            Transaksi Terakhir
+          </h2>
+          <div className="grid grid-cols-2 gap-m">
+            <QuotationList />
+            <ShippedItemList />
           </div>
-          <div className="grid grid-cols-2 gap-6">
-            <div className="flex flex-col space-y-2 text-white">
-              <p>Limit Terpakai</p>
-              <p className="text-xl font-bold">
-                {' '}
-                {toRupiah(+data?.data.used_plafon)}
-              </p>
-            </div>
-            <div className="flex flex-col space-y-2 text-white">
-              <p>Limit Awal</p>
-              <p className="text-xl font-bold">
-                {toRupiah(+data?.data.limit_plafon)}
-              </p>
-            </div>
-          </div>
-        </Card>
+        </div>
       </>
     );
   return (
