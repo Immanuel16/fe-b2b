@@ -1,27 +1,23 @@
 'use client';
+import { Header } from '@/features/@shared/components/headers';
+import { Skeleton } from '@/features/@shared/components/skeleton';
+import { cn } from '@/features/@shared/utils/cn';
+import { toRupiah } from '@/features/@shared/utils/formatter';
+import { format } from 'date-fns';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import * as React from 'react';
 import { Card } from '../../@shared/components/card';
 import { ChevronDownIcon } from '../../@shared/components/icon';
 import { Quotations } from '../constants/data';
-import { format } from 'date-fns';
-import { cn } from '@/features/@shared/utils/cn';
-import { useSearchParams } from 'next/navigation';
-import Image from 'next/image';
-import Link from 'next/link';
-import { Header } from '@/features/@shared/components/headers';
-import { Button } from '@/features/@shared/components/button';
 import { useFetchSaldo } from '../utils/queries';
-import { encrypt, toRupiah } from '@/features/@shared/utils/formatter';
-import { deleteCookie, setCookie } from 'cookies-next';
-import { useUserId } from '@/features/@shared/utils/use-userid';
-import { Skeleton } from '@/features/@shared/components/skeleton';
-import { useLogout, useLogoutExternal } from '@/features/login/utils/query';
 
 const DashboardView = () => {
   const params = useSearchParams();
-  const [isVerified, setIsVerified] = React.useState<boolean>(
-    !(params.get('status') === 'unverified'),
-  );
+  // const [isVerified, setIsVerified] = React.useState<boolean>(
+  //   !(params.get('status') === 'unverified'),
+  // );
   // if (isVerified) return <DashboardVerifyView />;
   return <DashboardVerifyView />;
 };

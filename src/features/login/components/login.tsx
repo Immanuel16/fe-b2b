@@ -16,10 +16,12 @@ import * as React from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 import { LoginRequest, useLogin, useLoginExternal } from '../utils/query';
+import { useSpinner } from '@/features/@shared/context/spinner';
+
 const LoginSchemas = Yup.object({
   user_id: Yup.string()
-    .required('Email wajib diisi')
-    .matches(usernameRegex, 'Format tidak valid'),
+    .required('Username wajib diisi')
+    .matches(usernameRegex, 'Username tidak valid'),
   password: Yup.string()
     .required('Password wajib diisi')
     .required('Password wajib diisi')
@@ -27,19 +29,19 @@ const LoginSchemas = Yup.object({
     .matches(passwordRegex, 'Format tidak valid'),
 });
 
-type LoginForm = {
-  user_id: string;
-  password: string;
-};
-
 function Login() {
   const [type, setType] = React.useState<string>('password');
+  const { setActiveSpinner } = useSpinner();
   const router = useRouter();
   const pathname = usePathname();
 
-  const formControl = useForm<LoginRequest>({
+  const {
+    control,
+    formState: { isValid },
+    handleSubmit,
+  } = useForm<LoginRequest>({
     resolver: yupResolver(LoginSchemas),
-    mode: 'onBlur',
+    mode: 'onChange',
     defaultValues: {
       user_id: '',
       password: '',
@@ -57,6 +59,7 @@ function Login() {
     useLoginExternal();
 
   const login = async (values: LoginRequest) => {
+    setActiveSpinner(true);
     const body = {
       user_id: encrypt(values.user_id),
       password: encrypt(values.password),
@@ -73,14 +76,17 @@ function Login() {
         setCookie('token', response.token);
       }
       router.push('/');
+      setTimeout(() => {
+        setActiveSpinner(false);
+      }, 4000);
     } catch (err) {
       console.error(err);
     }
   };
   return (
     <form
-      onSubmit={formControl.handleSubmit(login)}
-      className="flex w-[446px] flex-col space-y-6 rounded-3xl bg-white px-10 py-[38px] shadow-card"
+      onSubmit={handleSubmit(login)}
+      className="flex w-full flex-col space-y-6 rounded-3xl bg-white px-6 py-[38px] shadow-card md:w-[446px] md:px-10"
     >
       <div className="space-y-xs font-semibold">
         <h4 className="text-xl">Blicicil for Business</h4>
@@ -94,12 +100,9 @@ function Login() {
             label={pathname.includes('login-internal') ? 'NIK' : 'Email'}
           >
             <Controller
-              control={formControl.control}
+              control={control}
               name="user_id"
-              render={({
-                field: { value, ...field },
-                fieldState: { error },
-              }) => (
+              render={({ field: { ...field }, fieldState: { error } }) => (
                 <TextInput
                   placeholder={`Masukkan ${pathname.includes('login-internal') ? 'nik' : 'email'}`}
                   color={error ? 'failure' : 'gray'}
@@ -116,12 +119,9 @@ function Login() {
           <InputGroup id="password" label="Password">
             <div className="relative">
               <Controller
-                control={formControl.control}
+                control={control}
                 name="password"
-                render={({
-                  field: { value, ...field },
-                  fieldState: { error },
-                }) => (
+                render={({ field: { ...field }, fieldState: { error } }) => (
                   <TextInput
                     type={type}
                     placeholder="Masukkan password"
@@ -148,24 +148,12 @@ function Login() {
 
       <Button
         type="submit"
-        disabled={
-          !(formControl.formState.isValid && formControl.formState.isDirty) ||
-          isPending
-        }
+        disabled={!isValid || isPending || isPendingExternal}
         color="primary-orange"
-        isProcessing={isPending}
+        isProcessing={isPending || isPendingExternal}
       >
         Masuk
       </Button>
-      {/* <button
-        className="w-full p-3 text-white bg-b2b-primary rounded-3xl"
-        type="submit"
-        disabled={!(formik.dirty && formik.isValid)}
-      >
-        Masuk
-      </button> */}
-      {/* {formik.isValid && formik.dirty && (
-      )} */}
     </form>
   );
 }

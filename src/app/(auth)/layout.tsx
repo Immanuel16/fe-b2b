@@ -8,7 +8,7 @@ export default function AuthLayout({
 }>) {
   return (
     <div
-      className="relative flex h-screen w-full flex-col justify-center space-y-4 px-[80px] text-[#333]"
+      className="relative flex h-screen w-full flex-col justify-center space-y-4 px-4 text-[#333] md:px-[80px]"
       style={{
         backgroundImage: `url('/register-onboarding.svg')`,
         backgroundSize: 'cover',
